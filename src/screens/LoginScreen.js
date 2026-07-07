@@ -10,7 +10,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = () => {
     // TODO: conectar con Firebase Auth
-    navigation.navigate('Home');
+    navigation.navigate('Main');
   };
 
   return (

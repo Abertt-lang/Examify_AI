@@ -6,13 +6,16 @@ export default function CourseCard({ course, onPress }) {
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && { opacity: 0.85 }]}
+      style={({ pressed }) => [
+        styles.card,
+        { backgroundColor: course.bg },
+        pressed && { opacity: 0.85 },
+      ]}
     >
-      <View style={[styles.circle, { backgroundColor: course.color }]}>
-        <Text style={styles.emoji}>{course.emoji}</Text>
-      </View>
-      <View style={styles.button}>
-        <Text style={styles.buttonText}>{course.name}</Text>
+      <Text style={styles.emoji}>{course.emoji}</Text>
+      <Text style={styles.name}>{course.name}</Text>
+      <View style={styles.arrowCircle}>
+        <Text style={styles.arrowText}>→</Text>
       </View>
     </Pressable>
   );
@@ -20,26 +23,23 @@ export default function CourseCard({ course, onPress }) {
 
 const styles = StyleSheet.create({
   card: {
-    width: '47%',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  circle: {
-    width: 110,
-    height: 110,
-    borderRadius: 55,
+    width: '46%',
+    aspectRatio: 0.85,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 12,
+    paddingTop: 10,
+    width: '45%',
+  },
+  emoji: { fontSize: 45, marginBottom: 8 },
+  name: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: colors.textDark,
+    textAlign: 'center',
     marginBottom: 10,
   },
-  emoji: { fontSize: 44 },
-  button: {
-    backgroundColor: colors.primaryGreen,
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    width: '100%',
-    alignItems: 'center',
-  },
-  buttonText: { color: colors.white, fontWeight: '600', fontSize: 14 },
+  
+  arrowText: { color: colors.white, fontWeight: '700', fontSize: 14 },
 });
