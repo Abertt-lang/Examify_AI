@@ -9,4 +9,9 @@ export default {
   textMuted: '#5B6B7C',
   placeholder: '#9AA7B5',
   decor: 'rgba(255,255,255,0.55)',
+  textBlue: '#2D9CDB',
+  textPrimary: "#5BC0EB",
+  textPrimaryLight: "#DFF5FF", 
+  textsuccess: "#4CAF50",
 };
+//Estos son los colores que se usan en la app. Se pueden cambiar para personalizar el tema.

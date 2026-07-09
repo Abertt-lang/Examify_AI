@@ -94,11 +94,12 @@ const styles = StyleSheet.create({
   },
   headerEmoji: { fontSize: 26 },
   title: {
-    fontSize: 22,
-    fontWeight: "700",
+    fontSize: 28 ,
+    fontWeight: "200",
     color: colors.textDark,
     textAlign: "center",
     marginBottom: 20,
+    fontFamily: "Poppins_900Black",
   },
   card: {
     backgroundColor: colors.white,
