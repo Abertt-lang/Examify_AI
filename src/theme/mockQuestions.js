@@ -1,50 +1,170 @@
 export default {
-  aritmetica: [
-    {
-      question: "¿Cuánto es 24 ÷ 6?",
-      options: ["3", "4", "6", "8"],
-      correctIndex: 1,
-    },
-    {
-      question: "¿Cuál es el 20% de 150?",
-      options: ["20", "25", "30", "35"],
-      correctIndex: 2,
-    },
-    {
-      question: "¿Cuál de estos números es primo?",
-      options: ["9", "15", "17", "21"],
-      correctIndex: 2,
-    },
-  ],
-  ecuaciones: [
-    {
-      question: "Resuelve: 2x + 5 = 17",
-      options: ["x = 5", "x = 6", "x = 7", "x = 8"],
-      correctIndex: 1,
-    },
-    {
-      question: "Resuelve: 3x - 4 = 11",
-      options: ["x = 3", "x = 4", "x = 5", "x = 6"],
-      correctIndex: 2,
-    },
-    {
-      question: "Resuelve: x/4 = 9",
-      options: ["x = 13", "x = 24", "x = 36", "x = 45"],
-      correctIndex: 2,
-    },
-  ],
-  // Para cualquier subtema sin preguntas propias todavía
-  // (esto se reemplazará con preguntas generadas por IA más adelante)
+  aritmetica: {
+    facil: [
+      { question: "¿Cuánto es 24 ÷ 6?", options: ["3", "4", "6", "8"], correctIndex: 1 },
+      { question: "¿Cuánto es 15 + 27?", options: ["32", "40", "42", "44"], correctIndex: 2 },
+      { question: "¿Cuánto es 9 × 7?", options: ["56", "63", "72", "81"], correctIndex: 1 },
+      { question: "¿Cuánto es 144 ÷ 12?", options: ["10", "11", "12", "14"], correctIndex: 2 },
+      { question: "¿Cuánto es 58 - 23?", options: ["25", "35", "45", "33"], correctIndex: 1 },
+    ],
+    medio: [
+      { question: "¿Cuál es el 20% de 150?", options: ["20", "25", "30", "35"], correctIndex: 2 },
+      { question: "¿Cuánto es 3/4 + 1/2?", options: ["5/4", "4/4", "7/4", "1 1/4"], correctIndex: 2 },
+      { question: "Si compras 3 articles a S/. 45.50 c/u, ¿cuánto pagas?", options: ["S/. 125.50", "S/. 135.50", "S/. 136.50", "S/. 140.00"], correctIndex: 2 },
+      { question: "¿Cuánto es 2³ + 3²?", options: ["13", "15", "17", "19"], correctIndex: 2 },
+      { question: "¿Cuál es el MCM de 6 y 8?", options: ["12", "24", "48", "36"], correctIndex: 1 },
+    ],
+    dificil: [
+      { question: "¿Cuál de estos números es primo?", options: ["9", "15", "17", "21"], correctIndex: 2 },
+      { question: "Resuelve: (2⁴ × 3²) ÷ 6", options: ["24", "36", "48", "72"], correctIndex: 0 },
+      { question: "¿Cuánto es √(196) + √(81)?", options: ["20", "22", "26", "28"], correctIndex: 2 },
+      { question: "Un número aumentado en un 50% da 180. ¿Cuál es el número?", options: ["90", "100", "120", "135"], correctIndex: 2 },
+      { question: "¿Cuánto es 7! ÷ 5! ?", options: ["7", "12", "42", "21"], correctIndex: 2 },
+    ],
+  },
+  algebra: {
+    facil: [
+      { question: "Si x + 5 = 12, ¿cuánto es x?", options: ["5", "6", "7", "8"], correctIndex: 2 },
+      { question: "Simplifica: 3a + 2a", options: ["5a", "6a", "5a²", "3a²"], correctIndex: 0 },
+      { question: "¿Cuánto es 2x cuando x = 6?", options: ["8", "10", "12", "14"], correctIndex: 2 },
+      { question: "Si y - 3 = 10, ¿cuánto es y?", options: ["7", "10", "13", "30"], correctIndex: 2 },
+      { question: "Simplifica: 5(x + 1)", options: ["5x + 1", "5x + 5", "5x + 6", "x + 5"], correctIndex: 1 },
+    ],
+    medio: [
+      { question: "Resuelve: 2x + 3 = 15", options: ["x = 5", "x = 6", "x = 7", "x = 9"], correctIndex: 1 },
+      { question: "Si 4a - 7 = 9, ¿cuánto es a?", options: ["2", "3", "4", "5"], correctIndex: 2 },
+      { question: "Factoriza: x² - 9", options: ["(x-3)²", "(x+3)²", "(x-3)(x+3)", "(x-9)(x+1)"], correctIndex: 2 },
+      { question: "Resuelve: 3(x - 2) = 21", options: ["x = 5", "x = 7", "x = 9", "x = 11"], correctIndex: 2 },
+      { question: "¿Cuál es el valor de x si 5x/2 = 20?", options: ["4", "6", "8", "10"], correctIndex: 2 },
+    ],
+    dificil: [
+      { question: "Resuelve el sistema: x + y = 10, x - y = 4", options: ["x=6, y=4", "x=7, y=3", "x=5, y=5", "x=8, y=2"], correctIndex: 1 },
+      { question: "Si f(x) = 2x² - 3x + 1, ¿cuánto es f(2)?", options: ["1", "3", "5", "7"], correctIndex: 1 },
+      { question: "Factoriza: x² + 5x + 6", options: ["(x+1)(x+6)", "(x+2)(x+3)", "(x-2)(x-3)", "(x+1)(x+5)"], correctIndex: 1 },
+      { question: "Resuelve: x² - 5x + 6 = 0", options: ["x=1,6", "x=2,3", "x=-2,-3", "x=1,5"], correctIndex: 1 },
+      { question: "Si 3^(x+1) = 27, ¿cuánto es x?", options: ["1", "2", "3", "4"], correctIndex: 1 },
+    ],
+  },
+  ecuaciones: {
+    facil: [
+      { question: "Resuelve: x + 8 = 15", options: ["5", "6", "7", "8"], correctIndex: 2 },
+      { question: "Resuelve: 2x = 18", options: ["6", "8", "9", "10"], correctIndex: 2 },
+      { question: "Resuelve: x/3 = 9", options: ["3", "12", "18", "27"], correctIndex: 3 },
+      { question: "Resuelve: x - 11 = 4", options: ["7", "11", "15", "19"], correctIndex: 2 },
+      { question: "Resuelve: 5x + 5 = 20", options: ["2", "3", "4", "5"], correctIndex: 2 },
+    ],
+    medio: [
+      { question: "Resuelve: 2x + 5 = 17", options: ["x = 5", "x = 6", "x = 7", "x = 8"], correctIndex: 1 },
+      { question: "Resuelve: 3x - 4 = 11", options: ["x = 3", "x = 4", "x = 5", "x = 6"], correctIndex: 2 },
+      { question: "Resuelve: x/4 = 9", options: ["x = 13", "x = 24", "x = 36", "x = 45"], correctIndex: 2 },
+      { question: "Resuelve: 4(x - 3) = 20", options: ["x = 6", "x = 7", "x = 8", "x = 9"], correctIndex: 2 },
+      { question: "Resuelve: (2x + 1)/3 = 5", options: ["x = 5", "x = 6", "x = 7", "x = 8"], correctIndex: 2 },
+    ],
+    dificil: [
+      { question: "Resuelve: 3(2x - 1) - 4 = 2(x + 5)", options: ["x=3", "x=4", "x=5", "x=6"], correctIndex: 2 },
+      { question: "Si 5x - 2(3x - 4) = 12, ¿x?", options: ["x = 2", "x = 4", "x = 6", "x = 8"], correctIndex: 1 },
+      { question: "Resuelve: 2x/3 + x/6 = 5", options: ["x = 4", "x = 5", "x = 6", "x = 7"], correctIndex: 2 },
+      { question: "Resuelve: |2x - 5| = 9", options: ["x=2,7", "x=-2,7", "x=1,8", "x=3,6"], correctIndex: 0 },
+      { question: "Resuelve: (x+2)/2 - (x-1)/3 = 1", options: ["x=2", "x=4", "x=6", "x=8"], correctIndex: 1 },
+    ],
+  },
+  inecuaciones: {
+    facil: [
+      { question: "¿Cuál es la solución de x + 3 > 7?", options: ["x > 3", "x > 4", "x > 7", "x > 10"], correctIndex: 1 },
+      { question: "Resuelve: 2x < 10", options: ["x < 2", "x < 5", "x < 8", "x < 10"], correctIndex: 1 },
+      { question: "Si x - 4 ≥ 1, ¿cuál es x?", options: ["x ≥ 3", "x ≥ 4", "x ≥ 5", "x ≥ 6"], correctIndex: 2 },
+      { question: "Resuelve: 3x > 15", options: ["x > 3", "x > 4", "x > 5", "x > 6"], correctIndex: 2 },
+      { question: "Resuelve: x + 10 ≤ 20", options: ["x ≤ 8", "x ≤ 10", "x ≤ 12", "x ≤ 15"], correctIndex: 1 },
+    ],
+    medio: [
+      { question: "Resuelve: 3x - 5 > 10", options: ["x > 3", "x > 4", "x > 5", "x > 6"], correctIndex: 2 },
+      { question: "Resuelve: 2(x + 1) ≤ 12", options: ["x ≤ 4", "x ≤ 5", "x ≤ 6", "x ≤ 7"], correctIndex: 1 },
+      { question: "Resuelve: (x - 3)/2 > 4", options: ["x > 5", "x > 7", "x > 9", "x > 11"], correctIndex: 3 },
+      { question: "Resuelve: 5x + 2 ≥ 3x + 8", options: ["x ≥ 1", "x ≥ 2", "x ≥ 3", "x ≥ 4"], correctIndex: 2 },
+      { question: "Resuelve: -2x + 6 < 10", options: ["x > -2", "x > 2", "x < 2", "x < -2"], correctIndex: 0 },
+    ],
+    dificil: [
+      { question: "Resuelve: |x - 3| < 5", options: ["-2 < x < 8", "-1 < x < 7", "0 < x < 6", "1 < x < 5"], correctIndex: 0 },
+      { question: "Resuelve: 3x - 7 > 2x + 3", options: ["x > 3", "x > 5", "x > 7", "x > 10"], correctIndex: 3 },
+      { question: "Resuelve: (2x+1)/3 ≥ (x-2)/2", options: ["x ≥ -7", "x ≥ 7", "x ≥ -5", "x ≥ 5"], correctIndex: 0 },
+      { question: "Resuelve: 4 - 3x > -5", options: ["x < 3", "x < -3", "x > 3", "x > -3"], correctIndex: 0 },
+      { question: "Resuelve: |2x + 1| ≤ 7", options: ["-4 ≤ x ≤ 3", "-3 ≤ x ≤ 4", "-5 ≤ x ≤ 2", "-2 ≤ x ≤ 5"], correctIndex: 0 },
+    ],
+  },
+  geometria: {
+    facil: [
+      { question: "¿Cuánto mide la suma de ángulos internos de un triángulo?", options: ["90°", "180°", "270°", "360°"], correctIndex: 1 },
+      { question: "¿Cuánto es el área de un cuadrado de lado 5 cm?", options: ["10 cm²", "15 cm²", "20 cm²", "25 cm²"], correctIndex: 3 },
+      { question: "Un rectángulo tiene largo 8 y ancho 3. ¿Cuánto es su perímetro?", options: ["11", "22", "24", "26"], correctIndex: 2 },
+      { question: "¿Cuántos lados tiene un hexágono?", options: ["5", "6", "7", "8"], correctIndex: 1 },
+      { question: "¿Cuánto es el área de un triángulo con base 10 y altura 6?", options: ["16", "20", "30", "60"], correctIndex: 2 },
+    ],
+    medio: [
+      { question: "¿Cuánto es la hipotenusa de un triángulo con catetos 3 y 4?", options: ["5", "6", "7", "12"], correctIndex: 0 },
+      { question: "El área de un círculo es πr². Si r=7, ¿cuánto es el área?", options: ["49π", "98π", "147π", "196π"], correctIndex: 0 },
+      { question: "¿Cuánto es el volumen de un cubo de lado 4 cm?", options: ["16 cm³", "32 cm³", "48 cm³", "64 cm³"], correctIndex: 3 },
+      { question: "Un trapecio tiene bases 8 y 12, y altura 5. ¿Su área?", options: ["40", "50", "60", "80"], correctIndex: 1 },
+      { question: "¿Cuánto mide cada ángulo interno de un hexágono regular?", options: ["100°", "120°", "135°", "150°"], correctIndex: 1 },
+    ],
+    dificil: [
+      { question: "Un cilindro tiene r=3 y h=10. ¿Cuánto es su volumen?", options: ["30π", "60π", "90π", "180π"], correctIndex: 2 },
+      { question: "¿Cuánto es el área de un círculo con diámetro 14?", options: ["49π", "98π", "196π", "28π"], correctIndex: 0 },
+      { question: "Un cono tiene r=5 y h=12. ¿Cuánto es su volumen?", options: ["60π", "100π", "120π", "300π"], correctIndex: 1 },
+      { question: "¿Cuánto es el área de una esfera con radio 6?", options: ["36π", "72π", "144π", "216π"], correctIndex: 2 },
+      { question: "Un prisma rectangular tiene 5×3×4. ¿Cuánta es su superficie total?", options: ["47", "60", "94", "120"], correctIndex: 2 },
+    ],
+  },
+  trigonometria: {
+    facil: [
+      { question: "¿Cuánto es sen(30°)?", options: ["1/2", "√2/2", "√3/2", "1"], correctIndex: 0 },
+      { question: "¿Cuánto es cos(0°)?", options: ["0", "1/2", "√2/2", "1"], correctIndex: 3 },
+      { question: "¿Cuánto es tan(45°)?", options: ["0", "1/2", "1", "√3"], correctIndex: 2 },
+      { question: "En un triángulo rectángulo, sen = ?", options: ["Cateto adyacente / hipotenusa", "Cateto opuesto / hipotenusa", "Opuesto / adyacente", "Hipotenusa / opuesto"], correctIndex: 1 },
+      { question: "¿Cuánto es cos(60°)?", options: ["0", "1/2", "√3/2", "1"], correctIndex: 1 },
+    ],
+    medio: [
+      { question: "En un triángulo con ángulo 30° y hipotenusa 10, ¿cuánto mide el cateto opuesto?", options: ["3", "5", "6", "8"], correctIndex: 1 },
+      { question: "¿Cuánto es sen²(x) + cos²(x)?", options: ["0", "1", "2", "Depende de x"], correctIndex: 1 },
+      { question: "Si tan(θ) = 3/4, ¿cuánto es sen(θ)?", options: ["3/4", "3/5", "4/5", "4/3"], correctIndex: 1 },
+      { question: "¿Cuánto es sen(90°)?", options: ["0", "1/2", "√2/2", "1"], correctIndex: 3 },
+      { question: "Un triángulo tiene catetos 5 y 12. ¿Cuánto es tan del ángulo opuesto al cateto 5?", options: ["5/12", "12/5", "5/13", "12/13"], correctIndex: 0 },
+    ],
+    dificil: [
+      { question: "¿Cuánto es sen(150°)?", options: ["-1/2", "1/2", "√3/2", "-√3/2"], correctIndex: 1 },
+      { question: "Si sen(A) = 0.6 y A es agudo, ¿cuánto es cos(A)?", options: ["0.4", "0.6", "0.8", "1.0"], correctIndex: 2 },
+      { question: "Resuelve: 2sen(x) = 1, donde 0° ≤ x ≤ 180°", options: ["30° y 150°", "30° y 60°", "60° y 120°", "45° y 135°"], correctIndex: 0 },
+      { question: "¿Cuánto es tan(300°)?", options: ["-√3", "-1", "1", "√3"], correctIndex: 0 },
+      { question: "En un triángulo con lados 7, 24 y 25, ¿cuánto es el ángulo mayor?", options: ["60°", "75°", "90°", "120°"], correctIndex: 2 },
+    ],
+  },
+  estadistica: {
+    facil: [
+      { question: "¿Cuál es la media de 2, 4, 6, 8, 10?", options: ["4", "5", "6", "8"], correctIndex: 2 },
+      { question: "¿Cuál es la moda de 3, 5, 3, 7, 3?", options: ["3", "5", "7", "4"], correctIndex: 0 },
+      { question: "¿Cuál es la mediana de 1, 3, 5, 7, 9?", options: ["3", "5", "7", "9"], correctIndex: 1 },
+      { question: "¿Cuántos datos hay en la muestra: 4, 8, 12, 16?", options: ["3", "4", "5", "6"], correctIndex: 1 },
+      { question: "¿Cuál es la media de 10, 20, 30?", options: ["15", "20", "25", "30"], correctIndex: 1 },
+    ],
+    medio: [
+      { question: "¿Cuál es la varianza de 2, 4, 6?", options: ["2", "3", "4", "8/3"], correctIndex: 3 },
+      { question: "En una encuesta: A=30%, B=45%, C=25%. ¿Cuál es la moda?", options: ["A", "B", "C", "No hay moda"], correctIndex: 1 },
+      { question: "Los datos: 3, 7, 8, 5, 12. ¿Cuál es la mediana?", options: ["5", "7", "8", "12"], correctIndex: 1 },
+      { question: "Si la media de 5 datos es 20, y 4 datos son 18, 22, 16, 24, ¿cuál es el 5to?", options: ["18", "20", "22", "24"], correctIndex: 1 },
+      { question: "¿Cuál es la desviación estándar de 4, 4, 4, 4?", options: ["0", "1", "2", "4"], correctIndex: 0 },
+    ],
+    dificil: [
+      { question: "Si P(A) = 0.3 y P(B) = 0.5, y son independientes, ¿P(A ∩ B)?", options: ["0.15", "0.30", "0.50", "0.80"], correctIndex: 0 },
+      { question: "Datos: 2, 3, 5, 5, 7, 8, 10. ¿Cuál es el rango?", options: ["5", "7", "8", "10"], correctIndex: 2 },
+      { question: "La distribución normal tiene μ=50, σ=10. ¿Aprox. qué % está entre 40 y 60?", options: ["50%", "68%", "95%", "99%"], correctIndex: 1 },
+      { question: "Si hay 10 personas, ¿cuántas combinaciones de 3 se pueden formar?", options: ["30", "60", "120", "720"], correctIndex: 2 },
+      { question: "¿Cuántas permutaciones hay de 5 objetos tomados de 3 en 3?", options: ["10", "15", "60", "120"], correctIndex: 2 },
+    ],
+  },
   default: [
-    {
-      question: "Esta es una pregunta de ejemplo para este tema.",
-      options: ["Opción A", "Opción B", "Opción C", "Opción D"],
-      correctIndex: 0,
-    },
-    {
-      question: "Segunda pregunta de ejemplo.",
-      options: ["Opción A", "Opción B", "Opción C", "Opción D"],
-      correctIndex: 1,
-    },
+    { question: "Esta es una pregunta de ejemplo para este tema.", options: ["Opción A", "Opción B", "Opción C", "Opción D"], correctIndex: 0 },
+    { question: "Segunda pregunta de ejemplo.", options: ["Opción A", "Opción B", "Opción C", "Opción D"], correctIndex: 1 },
+    { question: "Tercera pregunta de ejemplo.", options: ["Opción A", "Opción B", "Opción C", "Opción D"], correctIndex: 2 },
+    { question: "Cuarta pregunta de ejemplo.", options: ["Opción A", "Opción B", "Opción C", "Opción D"], correctIndex: 3 },
+    { question: "Quinta pregunta de ejemplo.", options: ["Opción A", "Opción B", "Opción C", "Opción D"], correctIndex: 0 },
   ],
 };

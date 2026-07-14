@@ -1,16 +1,57 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import Background from '../components/Background';
-import ProfileHeader from '../components/ProfileHeader';
-import ProfileCard from '../components/ProfileCard';
-import StatCard from '../components/StatCard';
-import AchievementBadge from '../components/AchievementBadge';
-import ActivityRow from '../components/ActivityRow';
-import SettingsRow from '../components/SettingsRow';
-import mockProfile from '../theme/mockProfile';
-import colors from '../theme/colors';
+import React from "react";
+import { View, Text, ScrollView, Alert, StyleSheet } from "react-native";
+import Background from "../components/Background";
+import ProfileHeader from "../components/ProfileHeader";
+import ProfileCard from "../components/ProfileCard";
+import StatCard from "../components/StatCard";
+import AchievementBadge from "../components/AchievementBadge";
+import ActivityRow from "../components/ActivityRow";
+import SettingsRow from "../components/SettingsRow";
+import { useAuth } from "../contexts/AuthContext";
+import mockProfile from "../theme/mockProfile";
+import colors from "../theme/colors";
 
 export default function ProfileScreen({ navigation }) {
+  const { user, userInfo, logout } = useAuth();
+
+  const displayName =
+    userInfo?.displayName || user?.displayName || mockProfile.nombre;
+  const email = user?.email || mockProfile.correo;
+  const photoURL = user?.photoURL || null;
+
+  const nivel = userInfo?.nivel || mockProfile.nivel;
+  const xpActual = userInfo?.xpActual || mockProfile.xpActual;
+  const xpSiguienteNivel = mockProfile.xpSiguienteNivel;
+  const leccionesCompletadas =
+    userInfo?.leccionesCompletadas || mockProfile.leccionesCompletadas;
+  const progresoTotal =
+    userInfo?.progresoTotal || mockProfile.progresoTotal;
+  const rachaActual = userInfo?.rachaActual || mockProfile.rachaActual;
+
+  const miembroDesde = userInfo?.createdAt
+    ? new Date(userInfo.createdAt).toLocaleDateString("es-PE", {
+        month: "long",
+        year: "numeric",
+      })
+    : mockProfile.miembroDesde;
+
+  const handleLogout = () => {
+    Alert.alert("Cerrar sesión", "¿Estás seguro que deseas salir?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Salir",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await logout();
+          } catch (err) {
+            Alert.alert("Error", "No se pudo cerrar sesión.");
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <Background>
       <ScrollView
@@ -20,33 +61,33 @@ export default function ProfileScreen({ navigation }) {
         <ProfileHeader />
 
         <ProfileCard
-          nombre={mockProfile.nombre}
-          correo={mockProfile.correo}
-          miembroDesde={mockProfile.miembroDesde}
-          nivel={mockProfile.nivel}
-          xpActual={mockProfile.xpActual}
-          xpSiguienteNivel={mockProfile.xpSiguienteNivel}
+          nombre={displayName}
+          correo={email}
+          miembroDesde={miembroDesde}
+          nivel={nivel}
+          xpActual={xpActual}
+          xpSiguienteNivel={xpSiguienteNivel}
         />
 
         <View style={styles.statsRow}>
           <StatCard
             emoji="📖"
-            value={mockProfile.leccionesCompletadas}
-            label={'Lecciones\ncompletadas'}
+            value={leccionesCompletadas}
+            label={"Lecciones\ncompletadas"}
             bg="#E3F5E9"
             iconBg="#B8E6C8"
           />
           <StatCard
             emoji="🎯"
-            value={`${mockProfile.progresoTotal}%`}
-            label={'Progreso\ntotal'}
+            value={`${progresoTotal}%`}
+            label={"Progreso\ntotal"}
             bg="#E4EEFB"
             iconBg="#BBD6F5"
           />
           <StatCard
             emoji="🔥"
-            value={mockProfile.rachaActual}
-            label={'Días de racha\nactual'}
+            value={rachaActual}
+            label={"Días de racha\nactual"}
             bg="#EDE7FB"
             iconBg="#D2C4F5"
           />
@@ -101,8 +142,13 @@ export default function ProfileScreen({ navigation }) {
             iconBg="#FBE6E6"
             title="Cerrar sesión"
             subtitle="Salir de tu cuenta"
-            onPress={() => navigation.getParent()?.navigate('Login')}
+            onPress={handleLogout}
           />
+        </View>
+
+        <View style={styles.footerText}>
+          <Text style={styles.footerVersion}>Examify AI v1.0.0</Text>
+          <Text style={styles.footerEmail}>{email}</Text>
         </View>
       </ScrollView>
     </Background>
@@ -113,7 +159,7 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   container: { paddingHorizontal: 20, paddingTop: 50, paddingBottom: 40 },
   statsRow: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginHorizontal: -4,
     marginBottom: 20,
   },
@@ -124,11 +170,25 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: colors.textDark },
-  seeAll: { fontSize: 13, fontWeight: '600', color: colors.primaryGreenDark },
+  sectionTitle: { fontSize: 16, fontWeight: "700", color: colors.textDark },
+  seeAll: { fontSize: 13, fontWeight: "600", color: colors.primaryGreenDark },
+  footerText: {
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  footerVersion: {
+    fontSize: 12,
+    color: colors.placeholder,
+    marginBottom: 4,
+  },
+  footerEmail: {
+    fontSize: 12,
+    color: colors.placeholder,
+  },
 });

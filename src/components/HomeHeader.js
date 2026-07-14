@@ -31,12 +31,10 @@ const styles = StyleSheet.create({
     textBlock: { flex: 1 },
         greeting: {
         fontSize: 43,
-        fontWeight: '600',
-        color: colors.textDark,
-        lineHeight: 30,
         fontWeight: '700',
+        color: colors.textDark,
         lineHeight: 45,
-        fontFamily: 'AnchorJack_400Regular',
+        fontFamily: 'Poppins_700Bold',
     },
     greetingAccent: { color: colors.primaryGreenDark },
     question: {

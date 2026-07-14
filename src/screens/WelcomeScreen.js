@@ -3,8 +3,6 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import Background from '../components/Background';
 import PillButton from '../components/PillButton';
 import colors from '../theme/colors';
-import MascotaExamify from '../../assets/Mascota.png';
-import Logo from '../../assets/logo.png';
 import SpeechBubble from '../components/SpeechBubble.js';
 
 export default function WelcomeScreen({ navigation }) {
@@ -81,7 +79,7 @@ const styles = StyleSheet.create({
     PillButtonText: {
         fontSize: 25,
         fontWeight: '500',
-        fontFamily: 'Decorative_400Regular',
+        fontFamily: 'Poppins_700Bold',
         
     },
 });

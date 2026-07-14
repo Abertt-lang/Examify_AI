@@ -3,6 +3,7 @@ export default {
   gradientBottom: '#A9CDEE',
   primaryGreen: '#6FCF57',
   primaryGreenDark: '#4FA836',
+  primaryGreenLight: '#E3F5E9',
   white: '#FFFFFF',
   inputBg: '#FFFFFF',
   textDark: '#1F2A37',

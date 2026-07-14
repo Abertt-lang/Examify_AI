@@ -9,13 +9,14 @@ import RewardCard from '../components/RewardCard';
 import colors from '../theme/colors';
 
 export default function ResultScreen({ route, navigation }) {
-  const { score = 0, total = 1, topicName = '' } = route.params || {};
+  const { score = 0, total = 1, topicName = '', difficulty = '' } = route.params || {};
   const percent = Math.round((score / total) * 100);
   const incorrectas = total - score;
   const monedasGanadas = score * 2;
   const xpGanado = score * 10 + (percent >= 80 ? 20 : 0);
 
   const scale = useRef(new Animated.Value(0)).current;
+  const badgeScale = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.spring(scale, {
@@ -24,6 +25,17 @@ export default function ResultScreen({ route, navigation }) {
       tension: 60,
       useNativeDriver: true,
     }).start();
+
+    if (percent >= 80) {
+      setTimeout(() => {
+        Animated.spring(badgeScale, {
+          toValue: 1,
+          friction: 3,
+          tension: 80,
+          useNativeDriver: true,
+        }).start();
+      }, 600);
+    }
   }, []);
 
   const getMessage = () => {
@@ -31,6 +43,12 @@ export default function ResultScreen({ route, navigation }) {
     if (percent >= 60) return '¡Buen trabajo!';
     if (percent >= 40) return 'Vas por buen camino';
     return 'Sigue practicando';
+  };
+
+  const getMascotImage = () => {
+    if (percent >= 80) return require('../../assets/robotbien1.png');
+    if (percent >= 50) return require('../../assets/robotbien2.png');
+    return require('../../assets/robotfalla1.png');
   };
 
   return (
@@ -41,6 +59,11 @@ export default function ResultScreen({ route, navigation }) {
       >
         <Text style={styles.title}>Resultados</Text>
         <Text style={styles.subtitle}>{topicName}</Text>
+        {difficulty ? (
+          <View style={styles.diffBadge}>
+            <Text style={styles.diffText}>{difficulty}</Text>
+          </View>
+        ) : null}
 
         <Animated.View style={[styles.ringWrapper, { transform: [{ scale }] }]}>
           <ScoreRing percent={percent} />
@@ -50,6 +73,12 @@ export default function ResultScreen({ route, navigation }) {
         <Text style={styles.detail}>
           {score} de {total} respuestas correctas
         </Text>
+
+        {percent >= 80 && (
+          <Animated.View style={[styles.badge, { transform: [{ scale: badgeScale }] }]}>
+            <Text style={styles.badgeText}>🏆 ¡Insignia desbloqueada!</Text>
+          </Animated.View>
+        )}
 
         <View style={styles.statsRow}>
           <MiniStat value={score} label="Correctas" />
@@ -65,7 +94,7 @@ export default function ResultScreen({ route, navigation }) {
         </Pressable>
 
         <Image
-          source={require('../../assets/Mascota.png')}
+          source={getMascotImage()}
           style={styles.mascot}
           resizeMode="contain"
         />
@@ -83,10 +112,36 @@ const styles = StyleSheet.create({
   scroll: { flex: 1 },
   container: { paddingHorizontal: 24, paddingTop: 60, paddingBottom: 40, alignItems: 'center' },
   title: { fontSize: 26, fontWeight: '700', color: colors.textDark },
-  subtitle: { fontSize: 14, color: colors.textMuted, marginBottom: 30 },
+  subtitle: { fontSize: 14, color: colors.textMuted, marginBottom: 6 },
+  diffBadge: {
+    backgroundColor: colors.primaryGreen + "22",
+    paddingHorizontal: 14,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  diffText: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: colors.primaryGreenDark,
+  },
   ringWrapper: { marginBottom: 20 },
   message: { fontSize: 20, fontWeight: '700', color: colors.primaryGreenDark },
-  detail: { fontSize: 14, color: colors.textMuted, marginTop: 4, marginBottom: 24 },
+  detail: { fontSize: 14, color: colors.textMuted, marginTop: 4, marginBottom: 16 },
+  badge: {
+    backgroundColor: "#FFF8E1",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginBottom: 16,
+    borderWidth: 2,
+    borderColor: "#FFD54F",
+  },
+  badgeText: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#F57F17",
+  },
   statsRow: {
     flexDirection: 'row',
     width: '100%',
