@@ -56,9 +56,17 @@ export default function MascotTip({ message, isCorrect }) {
     outputRange: [0.2, 1],
   });
 
+  const correctImages = [
+    require("../../assets/robotbien1.png"),
+    require("../../assets/robotbien2.png"),
+  ];
+  const wrongImages = [
+    require("../../assets/robotfalla1.png"),
+    require("../../assets/robotfalla2.png"),
+  ];
   const mascotImage = isCorrect
-    ? require("../../assets/robotbien1.png")
-    : require("../../assets/robotfalla1.png");
+    ? correctImages[Math.floor(Math.random() * correctImages.length)]
+    : wrongImages[Math.floor(Math.random() * wrongImages.length)];
 
   return (
     <Animated.View

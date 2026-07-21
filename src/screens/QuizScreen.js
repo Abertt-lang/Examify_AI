@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, Pressable, ScrollView, Animated, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Background from "../components/Background";
@@ -10,25 +10,45 @@ import MascotTip from "../components/MascotTip";
 import { pickTip } from "../theme/quizTips";
 
 export default function QuizScreen({ route, navigation }) {
-  const { courseId, topicId, difficulty = "facil" } = route.params;
+  const { courseId, topicId, difficulty = "facil", aiQuestions } = route.params;
   const topic = (topicsByCourse[courseId] || []).find((t) => t.id === topicId);
   const diffInfo = difficultyLevels.find((d) => d.id === difficulty) || difficultyLevels[0];
 
   const topicQuestions = mockQuestions[topicId];
   const questions =
-    topicQuestions?.[difficulty] || topicQuestions?.facil || mockQuestions.default;
+    aiQuestions || topicQuestions?.[difficulty] || topicQuestions?.facil || [];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [score, setScore] = useState(0);
   const [tipMessage, setTipMessage] = useState("");
   const [answeredCorrect, setAnsweredCorrect] = useState(null);
+  const [answers, setAnswers] = useState([]);
 
-  const question = questions[currentIndex];
-  const isLastQuestion = currentIndex === questions.length - 1;
+  const question = questions?.[currentIndex];
+  const isLastQuestion = currentIndex === (questions?.length || 0) - 1;
   const hasAnswered = selectedOption !== null;
 
-  const NUM_OPTIONS = question.options.length;
+  if (!question) {
+    return (
+      <Background>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 40 }}>
+          <Ionicons name="alert-circle-outline" size={64} color={colors.textMuted} />
+          <Text style={{ fontSize: 18, fontWeight: "700", color: colors.textDark, marginTop: 16, textAlign: "center" }}>
+            No hay preguntas disponibles
+          </Text>
+          <Text style={{ fontSize: 14, color: colors.textMuted, marginTop: 8, textAlign: "center" }}>
+            Vuelve a intentarlo más tarde
+          </Text>
+          <View style={{ marginTop: 24 }}>
+            <PillButton title="Volver" onPress={() => navigation.goBack()} />
+          </View>
+        </View>
+      </Background>
+    );
+  }
+
+  const NUM_OPTIONS = question.options?.length || 4;
 
   const optionAnims = useRef(
     Array.from({ length: NUM_OPTIONS }, () => new Animated.Value(0))
@@ -90,6 +110,17 @@ export default function QuizScreen({ route, navigation }) {
     const correct = index === question.correctIndex;
     setAnsweredCorrect(correct);
 
+    setAnswers((prev) => [
+      ...prev,
+      {
+        question: question.question,
+        options: question.options,
+        selectedIndex: index,
+        correctIndex: question.correctIndex,
+        isCorrect: correct,
+      },
+    ]);
+
     if (correct) {
       setScore((prev) => prev + 1);
       scorePop.setValue(0);
@@ -145,10 +176,13 @@ export default function QuizScreen({ route, navigation }) {
   const handleNext = () => {
     if (isLastQuestion) {
       navigation.replace("Result", {
-        score: selectedOption === question.correctIndex ? score : score,
-        total: questions.length,
-        topicName: topic?.name,
-        difficulty: diffInfo.label,
+        score,
+        total: questions?.length || 0,
+        topicName: topic?.name || "Cuestionario IA",
+        difficulty: diffInfo?.label || "Medio",
+        courseId,
+        topicId,
+        answers,
       });
     } else {
       setCurrentIndex((prev) => prev + 1);
@@ -198,7 +232,7 @@ export default function QuizScreen({ route, navigation }) {
           <Pressable onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={22} color={colors.textDark} />
           </Pressable>
-          <Text style={styles.headerTitle}>{topic?.name}</Text>
+          <Text style={styles.headerTitle}>{topic?.name || "Cuestionario IA"}</Text>
           <View style={[styles.diffBadge, { backgroundColor: diffInfo.color + "22" }]}>
             <Text style={[styles.diffText, { color: diffInfo.color }]}>
               {diffInfo.label}
@@ -206,7 +240,7 @@ export default function QuizScreen({ route, navigation }) {
           </View>
           <Animated.View style={{ transform: [{ scale: scorePop }] }}>
             <Text style={styles.headerCount}>
-              {currentIndex + 1}/{questions.length}
+              {currentIndex + 1}/{questions?.length || 0}
             </Text>
           </Animated.View>
         </View>
@@ -216,7 +250,7 @@ export default function QuizScreen({ route, navigation }) {
             style={[
               styles.progressFill,
               {
-                width: `${((currentIndex + 1) / questions.length) * 100}%`,
+                width: `${((currentIndex + 1) / (questions?.length || 1)) * 100}%`,
                 backgroundColor: diffInfo.color,
               },
             ]}

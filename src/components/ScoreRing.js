@@ -1,57 +1,65 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import Svg, { Circle } from "react-native-svg";
+import React, { useEffect, useRef } from "react";
+import { View, Text, Animated, StyleSheet } from "react-native";
 import colors from "../theme/colors";
 
 export default function ScoreRing({ percent, size = 160 }) {
-  const strokeWidth = 14;
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const filled = circumference * (percent / 100);
+  const scaleAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      friction: 4,
+      tension: 40,
+      delay: 200,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const getColor = () => {
+    if (percent >= 80) return colors.primaryGreen;
+    if (percent >= 60) return "#FF9800";
+    return "#E05B5B";
+  };
 
   return (
-    <View style={{ width: size, height: size }}>
-      <Svg width={size} height={size}>
-        {/* Riel de fondo (gris) */}
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="#E5E9F0"
-          strokeWidth={strokeWidth}
-          fill="none"
-        />
-        {/* Relleno de progreso (verde) */}
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke={colors.primaryGreen}
-          strokeWidth={strokeWidth}
-          fill="none"
-          strokeDasharray={`${filled}, ${circumference}`}
-          strokeLinecap="round"
-          rotation="-90"
-          origin={`${size / 2}, ${size / 2}`}
-        />
-      </Svg>
-
-      <View style={styles.centerText}>
-        <Text style={styles.percentText}>{percent}%</Text>
+    <Animated.View
+      style={[
+        styles.container,
+        { width: size, height: size, transform: [{ scale: scaleAnim }] },
+      ]}
+    >
+      <View style={[styles.circle, { width: size, height: size, borderRadius: size / 2, borderColor: getColor() }]}>
+        <View style={styles.innerCircle}>
+          <Text style={[styles.percentText, { color: getColor() }]}>{percent}%</Text>
+          <Text style={styles.label}>correcto</Text>
+        </View>
       </View>
-    </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  centerText: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+  container: {
     alignItems: "center",
     justifyContent: "center",
   },
-  percentText: { fontSize: 28, fontWeight: "700", color: colors.textDark },
+  circle: {
+    borderWidth: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+  },
+  innerCircle: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  percentText: {
+    fontSize: 36,
+    fontWeight: "800",
+  },
+  label: {
+    fontSize: 13,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
 });

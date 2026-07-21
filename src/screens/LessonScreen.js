@@ -180,6 +180,24 @@ export default function LessonScreen({ route, navigation }) {
             <Text style={styles.tipText}>{content.texto}</Text>
           </View>
         );
+      case "imagen":
+        return (
+          <View style={styles.contentCard}>
+            <View style={styles.imageContainer}>
+              {content.source ? (
+                <Image source={content.source} style={styles.lessonImage} resizeMode="contain" />
+              ) : (
+                <View style={styles.imagePlaceholder}>
+                  <Ionicons name="image-outline" size={48} color={colors.placeholder} />
+                  <Text style={styles.imagePlaceholderText}>{content.label || "Toca para agregar imagen"}</Text>
+                </View>
+              )}
+            </View>
+            {content.caption && (
+              <Text style={styles.imageCaption}>{content.caption}</Text>
+            )}
+          </View>
+        );
       default:
         return null;
     }
@@ -244,6 +262,20 @@ export default function LessonScreen({ route, navigation }) {
           }}
         >
           {renderContent()}
+
+          {content && content.tipo !== "intro" && content.tipo !== "tip" && content.tipo !== "imagen" && (
+            <View style={styles.autoImageBox}>
+              {content.imageSource ? (
+                <Image source={content.imageSource} style={styles.lessonImage} resizeMode="contain" />
+              ) : (
+                <View style={styles.imagePlaceholder}>
+                  <Ionicons name="image-outline" size={36} color={colors.placeholder} />
+                  <Text style={styles.imagePlaceholderText}>Agregar imagen</Text>
+                  <Text style={styles.imagePlaceholderHint}>Toca para seleccionar una foto</Text>
+                </View>
+              )}
+            </View>
+          )}
         </Animated.View>
 
         <View style={styles.navRow}>
@@ -570,6 +602,57 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   tipText: { fontSize: 14, color: colors.textDark, lineHeight: 21 },
+  imageContainer: {
+    width: "100%",
+    borderRadius: 14,
+    overflow: "hidden",
+    marginBottom: 8,
+    backgroundColor: "#F5F7FA",
+    borderWidth: 2,
+    borderStyle: "dashed",
+    borderColor: "#D0D7E2",
+  },
+  imagePlaceholder: {
+    width: "100%",
+    height: 180,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#F0F3F7",
+  },
+  imagePlaceholderText: {
+    fontSize: 13,
+    color: colors.placeholder,
+    marginTop: 8,
+    fontWeight: "600",
+  },
+  imagePlaceholderHint: {
+    fontSize: 11,
+    color: colors.placeholder,
+    marginTop: 2,
+    opacity: 0.7,
+  },
+  lessonImage: {
+    width: "100%",
+    height: 200,
+  },
+  imageCaption: {
+    fontSize: 12,
+    color: colors.textMuted,
+    fontStyle: "italic",
+    textAlign: "center",
+    lineHeight: 18,
+  },
+  autoImageBox: {
+    width: "100%",
+    backgroundColor: "#F5F7FA",
+    borderRadius: 16,
+    borderWidth: 2,
+    borderStyle: "dashed",
+    borderColor: "#D0D7E2",
+    overflow: "hidden",
+    marginTop: 14,
+    marginBottom: 6,
+  },
   navRow: {
     flexDirection: "row",
     alignItems: "center",

@@ -13,6 +13,7 @@ import TopicsScreen from "../screens/TopicsScreen";
 import TopicInfoScreen from "../screens/TopicInfoScreen";
 import SubtopicDetailScreen from "../screens/SubtopicDetailScreen";
 import LessonScreen from "../screens/LessonScreen";
+import GenerateQuizScreen from "../screens/GenerateQuizScreen";
 import { useAuth } from "../contexts/AuthContext";
 
 const Stack = createNativeStackNavigator();
@@ -55,6 +56,7 @@ export default function AppNavigator() {
             <Stack.Screen name="TopicInfo" component={TopicInfoScreen} options={{ animation: "slide_from_right" }} />
             <Stack.Screen name="SubtopicDetail" component={SubtopicDetailScreen} options={{ animation: "slide_from_right", animationDuration: 350 }} />
             <Stack.Screen name="Lesson" component={LessonScreen} options={{ animation: "slide_from_bottom", animationDuration: 400 }} />
+            <Stack.Screen name="GenerateQuiz" component={GenerateQuizScreen} options={{ animation: "slide_from_right" }} />
           </>
         )}
       </Stack.Navigator>

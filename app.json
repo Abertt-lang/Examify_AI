@@ -30,6 +30,7 @@
     },
     "plugins": [
       "expo-font",
+      "expo-document-picker",
       "@react-native-google-signin/google-signin"
     ],
     "extra": {

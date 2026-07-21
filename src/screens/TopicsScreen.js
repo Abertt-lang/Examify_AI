@@ -12,11 +12,7 @@ export default function TopicsScreen({ route, navigation }) {
   const topics = topicsByCourse[courseId] || [];
 
   const handleTopicPress = (topicId) => {
-    if (courseId === "matematicas") {
-      navigation.navigate("SubtopicDetail", { courseId, topicId });
-    } else {
-      navigation.navigate("TopicInfo", { courseId, topicId });
-    }
+    navigation.navigate("SubtopicDetail", { courseId, topicId });
   };
 
   return (

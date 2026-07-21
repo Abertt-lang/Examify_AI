@@ -41,10 +41,8 @@ export default function HomeScreen({ navigation }) {
             title="Generar cuestionario con IA"
             subtitle="Pregúntale a la IA y obtén un cuestionario nuevo al instante."
             accentColor="#3B82F6"
-            onPress={() => {
-            //TODO: conectar con Gemini más adelante
-          }}
-        />
+            onPress={() => navigation.navigate('GenerateQuiz')}
+          />
 
           <ActionRow
             emoji="📤"

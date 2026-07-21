@@ -94,7 +94,7 @@ function SectionCard({ section, sIdx, onDifficulty }) {
 export default function SubtopicDetailScreen({ route, navigation }) {
   const { courseId, topicId } = route.params;
   const topic = (topicsByCourse[courseId] || []).find((t) => t.id === topicId);
-  const info = mockTopicInfo[topicId] || mockTopicInfo.default;
+  const info = mockTopicInfo[topicId] || { descripcion: "Tema en desarrollo", temas: [] };
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
