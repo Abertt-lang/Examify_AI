@@ -88,7 +88,7 @@ export default function RegisterScreen({ navigation }) {
           keyboardShouldPersistTaps="handled"
         >
           <Image
-            source={require("../../assets/logo.png")}
+            source={require("../../assets/Logoinicio.png")}
             style={styles.logoImage}
             resizeMode="contain"
           />

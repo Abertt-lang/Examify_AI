@@ -12,7 +12,7 @@ export default function WelcomeScreen({ navigation }) {
 
         
         <Image
-            source={require('../../assets/logo.png')}
+            source={require('../../assets/Logoinicio.png')}
             style={styles.mainImage}
             resizeMode="contain"
         />
