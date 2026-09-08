@@ -20,27 +20,23 @@ export function AuthProvider({ children }) {
   const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    console.log("[AUTH] Subscribing to onAuthStateChanged");
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log("[AUTH] onAuthStateChanged fired, user:", firebaseUser ? firebaseUser.uid : null);
       setUser(firebaseUser);
       if (firebaseUser) {
         try {
           const userDoc = await getDoc(doc(db, "users", firebaseUser.uid));
           if (userDoc.exists()) {
             setUserInfo(userDoc.data());
-            console.log("[AUTH] User info loaded from Firestore");
           } else {
-            console.log("[AUTH] No Firestore doc for this user");
+            setUserInfo(null);
           }
         } catch (err) {
-          console.log("[AUTH] Error loading user doc:", err.message);
+          console.error("[AUTH] Error loading user doc:", err.message);
         }
       } else {
         setUserInfo(null);
       }
       setLoading(false);
-      console.log("[AUTH] loading set to false");
     });
     return unsubscribe;
   }, []);

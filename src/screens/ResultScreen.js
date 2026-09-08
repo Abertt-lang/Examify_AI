@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Image,
-  Pressable,
   ScrollView,
   Animated,
   StyleSheet,
@@ -11,8 +10,8 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import Background from "../components/Background";
 import PillButton from "../components/PillButton";
-import ScoreRing from "../components/ScoreRing";
-import MiniStat from "../components/MiniStat";
+import WaterFillCircle from "../components/WaterFillCircle";
+import ResultBarChart from "../components/ResultBarChart";
 import RewardCard from "../components/RewardCard";
 import colors from "../theme/colors";
 import { saveQuizResult } from "../services/progress";
@@ -133,22 +132,22 @@ export default function ResultScreen({ route, navigation }) {
 
   const [saved, setSaved] = useState(false);
 
-  const scale = useRef(new Animated.Value(0)).current;
   const badgeScale = useRef(new Animated.Value(0)).current;
   const contentFade = useRef(new Animated.Value(0)).current;
+  const statsFade = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.spring(scale, {
-      toValue: 1,
-      friction: 5,
-      tension: 60,
-      useNativeDriver: true,
-    }).start();
-
     Animated.timing(contentFade, {
       toValue: 1,
       duration: 600,
       delay: 300,
+      useNativeDriver: true,
+    }).start();
+
+    Animated.timing(statsFade, {
+      toValue: 1,
+      duration: 800,
+      delay: 600,
       useNativeDriver: true,
     }).start();
 
@@ -160,7 +159,7 @@ export default function ResultScreen({ route, navigation }) {
           tension: 80,
           useNativeDriver: true,
         }).start();
-      }, 600);
+      }, 1000);
     }
 
     if (courseId && topicId && !saved) {
@@ -171,8 +170,10 @@ export default function ResultScreen({ route, navigation }) {
         difficulty,
         score,
         total,
+        answers,
       }).catch(() => {});
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getMessage = () => {
@@ -204,11 +205,7 @@ export default function ResultScreen({ route, navigation }) {
           </View>
         ) : null}
 
-        <Animated.View
-          style={[styles.ringWrapper, { transform: [{ scale }] }]}
-        >
-          <ScoreRing percent={percent} />
-        </Animated.View>
+        <WaterFillCircle percent={percent} size={200} duration={1500} />
 
         <Text style={styles.message}>{getMessage()}</Text>
         <Text style={styles.detail}>
@@ -228,11 +225,26 @@ export default function ResultScreen({ route, navigation }) {
           </Animated.View>
         )}
 
-        <View style={styles.statsRow}>
-          <MiniStat value={score} label="Correctas" />
-          <MiniStat value={incorrectas} label="Incorrectas" />
-          <MiniStat value={total} label="Total" />
-        </View>
+        <Animated.View style={{ opacity: statsFade, width: "100%" }}>
+          <ResultBarChart
+            correct={score}
+            incorrect={incorrectas}
+            total={total}
+          />
+
+          <View style={styles.timeCard}>
+            <View style={styles.timeRow}>
+              <Ionicons name="time-outline" size={20} color={colors.textMuted} />
+              <Text style={styles.timeLabel}>Tiempo estimado</Text>
+              <Text style={styles.timeValue}>{total * 0.5} min</Text>
+            </View>
+            <View style={styles.timeRow}>
+              <Ionicons name="speedometer-outline" size={20} color={colors.textMuted} />
+              <Text style={styles.timeLabel}>Velocidad</Text>
+              <Text style={styles.timeValue}>{Math.round(total / ((total * 0.5) || 1))} preg/min</Text>
+            </View>
+          </View>
+        </Animated.View>
 
         <RewardCard monedas={monedasGanadas} xp={xpGanado} />
 
@@ -314,7 +326,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: colors.primaryGreenDark,
   },
-  ringWrapper: { marginBottom: 20 },
   message: {
     fontSize: 20,
     fontWeight: "700",
@@ -340,13 +351,33 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#F57F17",
   },
-  statsRow: {
-    flexDirection: "row",
-    width: "100%",
+  timeCard: {
     backgroundColor: colors.white,
     borderRadius: 16,
     padding: 16,
     marginBottom: 16,
+    width: "100%",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+  },
+  timeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  timeLabel: {
+    fontSize: 13,
+    color: colors.textMuted,
+    marginLeft: 8,
+    flex: 1,
+  },
+  timeValue: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.textDark,
   },
   mascot: { width: 130, height: 130, marginBottom: 20 },
   reviewSection: {

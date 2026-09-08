@@ -44,7 +44,7 @@ export default function MascotTip({ message, isCorrect }) {
         }),
       ])
     ).start();
-  }, [message]);
+  }, [message, bounce, scaleBounce, pulseAnim]);
 
   const translateY = bounce.interpolate({
     inputRange: [0, 1],

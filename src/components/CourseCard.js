@@ -23,7 +23,6 @@ export default function CourseCard({ course, onPress }) {
 
 const styles = StyleSheet.create({
   card: {
-    width: '46%',
     aspectRatio: 0.85,
     borderRadius: 16,
     alignItems: 'center',

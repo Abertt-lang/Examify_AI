@@ -11,14 +11,15 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import Background from "../components/Background";
 import PillButton from "../components/PillButton";
-import { topicsByCourse, difficultyLevels } from "../theme/curriculum";
+import { topicsByCourse, difficultyLevels, getLessonLabel } from "../theme/curriculum";
 import mockLessons from "../theme/mockLessons";
 import colors from "../theme/colors";
 
 export default function LessonScreen({ route, navigation }) {
-  const { courseId, topicId, difficulty } = route.params;
+  const { courseId, topicId, lessonNumber = 1, difficulty } = route.params;
   const topic = (topicsByCourse[courseId] || []).find((t) => t.id === topicId);
   const diffInfo = difficultyLevels.find((d) => d.id === difficulty) || difficultyLevels[0];
+  const lessonLabel = getLessonLabel(lessonNumber);
 
   const topicLessons = mockLessons[topicId];
   const lesson = topicLessons?.[difficulty] || topicLessons?.facil || {
@@ -55,7 +56,7 @@ export default function LessonScreen({ route, navigation }) {
         useNativeDriver: true,
       }),
     ]).start();
-  }, [currentStep]);
+  }, [currentStep, fadeAnim, slideAnim, contentScale]);
 
   const content = lesson.contenido[currentStep];
   const isLast = currentStep === lesson.contenido.length - 1;
@@ -221,7 +222,7 @@ export default function LessonScreen({ route, navigation }) {
             <Text style={styles.headerTitle}>{topic?.name}</Text>
             <View style={[styles.diffBadge, { backgroundColor: diffInfo.color + "22" }]}>
               <Text style={[styles.diffText, { color: diffInfo.color }]}>
-                {diffInfo.emoji} {diffInfo.label}
+                Lección {lessonNumber}: {lessonLabel}
               </Text>
             </View>
           </View>

@@ -10,16 +10,16 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Background from "../components/Background";
-import { topicsByCourse, difficultyLevels } from "../theme/curriculum";
+import {
+  topicsByCourse,
+  difficultyLevels,
+  getDifficultyForLesson,
+  getLessonLabel,
+} from "../theme/curriculum";
 import mockTopicInfo from "../theme/mockTopicInfo";
 import colors from "../theme/colors";
 
-const SECTIONS = [
-  { key: "lecciones", label: "Lecciones", icon: "book-outline", mode: "lesson" },
-  { key: "cuestionarios", label: "Cuestionarios", icon: "help-circle-outline", mode: "quiz" },
-];
-
-function SectionCard({ section, sIdx, onDifficulty }) {
+function LessonsSection({ topic, onLessonPress }) {
   const sectionDelay = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -27,10 +27,87 @@ function SectionCard({ section, sIdx, onDifficulty }) {
       toValue: 1,
       friction: 6,
       tension: 50,
-      delay: 200 + sIdx * 150,
+      delay: 200,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [sectionDelay]);
+
+  const lessonColors = [colors.primaryGreen, "#2D9CDB", "#FF9800"];
+
+  return (
+    <Animated.View
+      style={[
+        styles.sectionCard,
+        {
+          opacity: sectionDelay,
+          transform: [
+            {
+              translateY: sectionDelay.interpolate({
+                inputRange: [0, 1],
+                outputRange: [20, 0],
+              }),
+            },
+          ],
+        },
+      ]}
+    >
+      <View style={styles.sectionHeader}>
+        <Ionicons name="book-outline" size={22} color={colors.primaryGreenDark} />
+        <Text style={styles.sectionTitle}>Lecciones</Text>
+      </View>
+
+      {Array.from({ length: topic.lessons || 3 }, (_, i) => i + 1).map(
+        (lessonNum) => (
+          <Pressable
+            key={lessonNum}
+            style={({ pressed }) => [
+              styles.lessonRow,
+              { borderColor: lessonColors[lessonNum - 1] || colors.primaryGreen },
+              pressed && styles.lessonPressed,
+            ]}
+            onPress={() => onLessonPress(lessonNum)}
+          >
+            <View
+              style={[
+                styles.lessonNumber,
+                {
+                  backgroundColor:
+                    lessonColors[lessonNum - 1] || colors.primaryGreen,
+                },
+              ]}
+            >
+              <Text style={styles.lessonNumberText}>{lessonNum}</Text>
+            </View>
+            <View style={styles.lessonInfo}>
+              <Text style={styles.lessonLabel}>
+                {getLessonLabel(lessonNum)}
+              </Text>
+              <Text style={styles.lessonSub}>Lección interactiva</Text>
+            </View>
+            <Ionicons
+              name="chevron-forward"
+              size={20}
+              color={colors.textMuted}
+            />
+          </Pressable>
+        )
+      )}
+    </Animated.View>
+  );
+}
+
+function QuizzesSection({ onDifficulty }) {
+  const sectionDelay = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.spring(sectionDelay, {
+      toValue: 1,
+      friction: 6,
+      tension: 50,
+      delay: 400,
+      useNativeDriver: true,
+    }).start();
+  }, [sectionDelay]);
 
   return (
     <Animated.View
@@ -51,11 +128,11 @@ function SectionCard({ section, sIdx, onDifficulty }) {
     >
       <View style={styles.sectionHeader}>
         <Ionicons
-          name={section.icon}
+          name="help-circle-outline"
           size={22}
           color={colors.primaryGreenDark}
         />
-        <Text style={styles.sectionTitle}>{section.label}</Text>
+        <Text style={styles.sectionTitle}>Cuestionarios</Text>
       </View>
 
       {difficultyLevels.map((diff) => (
@@ -66,18 +143,14 @@ function SectionCard({ section, sIdx, onDifficulty }) {
             { borderColor: diff.color },
             pressed && styles.difficultyPressed,
           ]}
-          onPress={() => onDifficulty(diff.id, section.mode)}
+          onPress={() => onDifficulty(diff.id)}
         >
           <View
             style={[styles.difficultyDot, { backgroundColor: diff.color }]}
           />
           <View style={styles.difficultyInfo}>
             <Text style={styles.difficultyLabel}>{diff.label}</Text>
-            <Text style={styles.difficultySub}>
-              {section.mode === "lesson"
-                ? "Lección interactiva"
-                : "5 preguntas"}
-            </Text>
+            <Text style={styles.difficultySub}>5 preguntas</Text>
           </View>
           <Text style={styles.difficultyEmoji}>{diff.emoji}</Text>
           <Ionicons
@@ -94,7 +167,10 @@ function SectionCard({ section, sIdx, onDifficulty }) {
 export default function SubtopicDetailScreen({ route, navigation }) {
   const { courseId, topicId } = route.params;
   const topic = (topicsByCourse[courseId] || []).find((t) => t.id === topicId);
-  const info = mockTopicInfo[topicId] || { descripcion: "Tema en desarrollo", temas: [] };
+  const info = mockTopicInfo[topicId] || {
+    descripcion: "Tema en desarrollo",
+    temas: [],
+  };
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -113,22 +189,24 @@ export default function SubtopicDetailScreen({ route, navigation }) {
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [fadeAnim, slideAnim]);
 
-  const handleDifficulty = (difficultyId, mode) => {
-    if (mode === "quiz") {
-      navigation.navigate("Quiz", {
-        courseId,
-        topicId,
-        difficulty: difficultyId,
-      });
-    } else {
-      navigation.navigate("Lesson", {
-        courseId,
-        topicId,
-        difficulty: difficultyId,
-      });
-    }
+  const handleLesson = (lessonNumber) => {
+    const difficulty = getDifficultyForLesson(lessonNumber);
+    navigation.navigate("Lesson", {
+      courseId,
+      topicId,
+      lessonNumber,
+      difficulty,
+    });
+  };
+
+  const handleQuizDifficulty = (difficultyId) => {
+    navigation.navigate("Quiz", {
+      courseId,
+      topicId,
+      difficulty: difficultyId,
+    });
   };
 
   return (
@@ -167,14 +245,9 @@ export default function SubtopicDetailScreen({ route, navigation }) {
           resizeMode="contain"
         />
 
-        {SECTIONS.map((section, sIdx) => (
-          <SectionCard
-            key={section.key}
-            section={section}
-            sIdx={sIdx}
-            onDifficulty={handleDifficulty}
-          />
-        ))}
+        <LessonsSection topic={topic} onLessonPress={handleLesson} />
+
+        <QuizzesSection onDifficulty={handleQuizDifficulty} />
 
         <View style={styles.infoCard}>
           <Text style={styles.infoCardTitle}>Temas que verás:</Text>
@@ -247,6 +320,37 @@ const styles = StyleSheet.create({
     color: colors.textDark,
     marginLeft: 8,
   },
+  lessonRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F8FAFB",
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 8,
+    borderWidth: 1.5,
+    borderLeftWidth: 4,
+  },
+  lessonPressed: { opacity: 0.7, transform: [{ scale: 0.98 }] },
+  lessonNumber: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  lessonNumberText: {
+    fontSize: 14,
+    fontWeight: "800",
+    color: colors.white,
+  },
+  lessonInfo: { flex: 1 },
+  lessonLabel: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: colors.textDark,
+  },
+  lessonSub: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
   difficultyRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -258,7 +362,12 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
   },
   difficultyPressed: { opacity: 0.7, transform: [{ scale: 0.98 }] },
-  difficultyDot: { width: 10, height: 10, borderRadius: 5, marginRight: 12 },
+  difficultyDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginRight: 12,
+  },
   difficultyInfo: { flex: 1 },
   difficultyLabel: {
     fontSize: 15,

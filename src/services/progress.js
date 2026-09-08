@@ -12,7 +12,7 @@ async function getProgress() {
   }
 }
 
-export async function saveQuizResult({ courseId, topicId, difficulty, score, total }) {
+export async function saveQuizResult({ courseId, topicId, difficulty, score, total, answers = [] }) {
   const progress = await getProgress();
   const entry = {
     courseId,
@@ -21,26 +21,11 @@ export async function saveQuizResult({ courseId, topicId, difficulty, score, tot
     score,
     total,
     date: Date.now(),
+    answers,
   };
   progress.quizzes.push(entry);
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   return entry;
-}
-
-export async function saveLessonCompleted({ courseId, topicId, difficulty }) {
-  const progress = await getProgress();
-  const alreadyDone = progress.lessonsCompleted.some(
-    (l) => l.courseId === courseId && l.topicId === topicId && l.difficulty === difficulty
-  );
-  if (!alreadyDone) {
-    progress.lessonsCompleted.push({
-      courseId,
-      topicId,
-      difficulty,
-      date: Date.now(),
-    });
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-  }
 }
 
 export async function getCourseStats(courseId) {
@@ -109,21 +94,6 @@ export async function getAllStats() {
   };
 }
 
-export async function getTopicBestScore(courseId, topicId) {
-  const progress = await getProgress();
-  const topicQuizzes = progress.quizzes.filter(
-    (q) => q.courseId === courseId && q.topicId === topicId
-  );
-  if (topicQuizzes.length === 0) return null;
-
-  let best = 0;
-  for (const q of topicQuizzes) {
-    const pct = Math.round((q.score / q.total) * 100);
-    if (pct > best) best = pct;
-  }
-  return { best, total: topicQuizzes.length };
-}
-
 export async function getDifficultyStats(courseId, topicId) {
   const progress = await getProgress();
   const diffs = ["facil", "medio", "dificil"];
@@ -145,4 +115,32 @@ export async function getDifficultyStats(courseId, topicId) {
     }
   }
   return result;
+}
+
+export async function getRecentQuizzes(limit = 10) {
+  const progress = await getProgress();
+  return progress.quizzes
+    .sort((a, b) => b.date - a.date)
+    .slice(0, limit)
+    .map((q) => ({
+      ...q,
+      percent: Math.round((q.score / q.total) * 100),
+    }));
+}
+
+export async function getTrendData(courseId, limit = 5) {
+  const progress = await getProgress();
+  const filtered = courseId
+    ? progress.quizzes.filter((q) => q.courseId === courseId)
+    : progress.quizzes;
+
+  return filtered
+    .sort((a, b) => a.date - b.date)
+    .slice(-limit)
+    .map((q) => ({
+      date: q.date,
+      percent: Math.round((q.score / q.total) * 100),
+      score: q.score,
+      total: q.total,
+    }));
 }

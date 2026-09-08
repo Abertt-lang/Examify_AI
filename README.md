@@ -1,52 +1,79 @@
-# Examify AI — proyecto base (React Native + Expo)
+# Examify AI
 
-## 1. Crear el proyecto base (una sola vez)
+App educativa de cuestionarios y lecciones hecha con **React Native + Expo (SDK 54)**. Genera cuestionarios con IA a partir de archivos (PDF/PDF adjunto o imagen) usando Gemini, autenticación con Firebase y progreso guardado localmente.
 
-```bash
-npx create-expo-app examify-ai
-cd examify-ai
-```
+## Requisitos
 
-Luego reemplaza el `App.js` y la carpeta `src/` generadas por las que te
-acabo de pasar (copia y pega todo el contenido de este paquete dentro de tu
-carpeta `examify-ai`).
+- Node.js (compatible con Expo SDK 54)
+- Cuenta de [Firebase](https://console.firebase.google.com/) (Authentication + Firestore)
+- API key de [Google AI Studio](https://aistudio.google.com/) (Gemini)
 
-## 2. Instalar las librerías que usamos
+## Configuración
 
-```bash
-npx expo install expo-linear-gradient react-native-svg
-npx expo install @react-navigation/native @react-navigation/native-stack
-npx expo install react-native-screens react-native-safe-area-context
-npm install firebase
-```
-
-Usamos `npx expo install` (no `npm install`) para esas porque Expo se
-encarga de elegir la versión exacta compatible con tu SDK. Para Firebase sí
-usamos `npm install` normal porque es una librería independiente de Expo.
-
-## 3. Correr el proyecto
+1. Instala las dependencias:
 
 ```bash
-npx expo start
+npm install
 ```
 
-Te va a salir un código QR. Instala la app **Expo Go** en tu celular (Play
-Store) y escanéalo — ahí verás la app corriendo en vivo mientras programamos,
-sin necesidad de compilar un APK todavía.
+2. Crea el archivo `.env` copiando el template y completa tus credenciales:
 
-## 4. Qué ya está armado
+```bash
+cp .env.example .env
+```
 
-- `src/theme/colors.js` — paleta de colores centralizada
-- `src/components/Background.js` — el fondo degradado con hojas y destellos
-  en SVG (igual estilo que tu mockup, pero 100% código, sin imágenes)
-- `src/components/PillButton.js` — el botón verde tipo píldora reutilizable
-- `src/screens/LoginScreen.js` — pantalla completa y estilizada, de
-  referencia para el resto
-- Las demás pantallas (Register, Home, Quiz, Result, Progress) están como
-  placeholders navegables — las vamos llenando una por una
-- `src/navigation/AppNavigator.js` — conecta todas las pantallas
+El proyecto usa `EXPO_PUBLIC_*` (variables accesibles desde el bundle cliente):
 
-## 5. Próximo paso
+- `EXPO_PUBLIC_GEMINI_API_KEY` — clave de Gemini
+- `EXPO_PUBLIC_FIREBASE_*` — credenciales de tu proyecto Firebase
 
-Cuando lo tengas corriendo, seguimos con Firebase (cuenta, monedas,
-progreso) y después con las Cloud Functions para Gemini.
+No expongas el `.env` ni tus claves en el repositorio (ya está en `.gitignore`).
+
+3. Configura Firestore:
+   - Crea la colección `users/{userId}` (el doc guarda perfil, nivel y progreso).
+   - Publica las reglas con `firebase deploy --only firestore:rules` o desde la consola:
+     - Solo el dueño puede leer/escribir su propio doc (`request.auth.uid == userId`).
+
+## Correr la app
+
+```bash
+npm start            # Expo dev server
+npm run android      # compila y corre en Android (requiere build nativo)
+npm run ios          # compila y corre en iOS
+npm run web          # versión web
+```
+
+> Desde Expo Go puedes correr la mayoría del proyecto, pero las librerías nativas
+> (`lottie-react-native`) requieren un build con `npx expo run:android` para tener
+> el view manager disponible.
+
+## Scripts de calidad
+
+```bash
+npm run lint    # ESLint (config Expo flat, eslint-config-expo)
+npm run test    # Jest (preset jest-expo)
+```
+
+## Estructura
+
+```
+src/
+  components/    Componentes reutilizables (fondo, botones, gráficas, badges)
+  config/        firebase.js — inicialización de Firebase con variables de entorno
+  contexts/      AuthContext — sesión (email/password + Google)
+  navigation/    AppNavigator (stack) y MainTabs (Inicio / Progreso / Perfil)
+  screens/       Pantallas: Welcome, Login, Register, Home, Topics, SubtopicDetail,
+                 Lesson, Quiz, Result, Progress, Profile, GenerateQuiz
+  services/      gemini.js (generación de cuestionarios con IA) y progress.js
+                 (progreso en AsyncStorage)
+  theme/         Colores, curriculum (cursos/tópicos) y contenido de lecciones
+```
+
+## Funcionalidades
+
+- **Autenticación**: email/contraseña y Google Sign-In; perfil sincronizado con Firestore.
+- **Cuestionarios por tópico**: por dificultad (fácil/medio/difícil), lecciones por tema.
+- **Cuestionarios con IA**: sube un PDF o imagen; Gemini genera preguntas y navegas
+  directo al resultado con animación de éxito (Lottie).
+- **Resultados y progreso**: barra de resultado animada, distribución de respuestas,
+  tendencia y estadísticas por curso guardadas localmente (AsyncStorage).

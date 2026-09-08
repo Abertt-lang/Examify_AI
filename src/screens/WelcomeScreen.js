@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Image, StyleSheet } from 'react-native';
 import Background from '../components/Background';
 import PillButton from '../components/PillButton';
 import colors from '../theme/colors';
-import SpeechBubble from '../components/SpeechBubble.js';
+import SpeechBubble from '../components/SpeechBubble';
 
 export default function WelcomeScreen({ navigation }) {
     return (

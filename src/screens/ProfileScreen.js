@@ -17,7 +17,6 @@ export default function ProfileScreen({ navigation }) {
   const displayName =
     userInfo?.displayName || user?.displayName || mockProfile.nombre;
   const email = user?.email || mockProfile.correo;
-  const photoURL = user?.photoURL || null;
 
   const nivel = userInfo?.nivel || mockProfile.nivel;
   const xpActual = userInfo?.xpActual || mockProfile.xpActual;
@@ -44,7 +43,7 @@ export default function ProfileScreen({ navigation }) {
         onPress: async () => {
           try {
             await logout();
-          } catch (err) {
+          } catch {
             Alert.alert("Error", "No se pudo cerrar sesión.");
           }
         },

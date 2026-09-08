@@ -59,6 +59,17 @@ export const topicsByCourse = {
   ],
 };
 
+// Helper: map lesson number to difficulty key
+export function getDifficultyForLesson(lessonNumber) {
+  const map = { 1: "facil", 2: "medio", 3: "dificil" };
+  return map[lessonNumber] || "facil";
+}
+
+export function getLessonLabel(lessonNumber) {
+  const labels = { 1: "Básico", 2: "Intermedio", 3: "Avanzado" };
+  return labels[lessonNumber] || `Lección ${lessonNumber}`;
+}
+
 export const difficultyLevels = [
   { id: "facil", label: "Fácil", color: "#4CAF50", emoji: "⭐" },
   { id: "medio", label: "Medio", color: "#FF9800", emoji: "⭐⭐" },

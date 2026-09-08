@@ -22,34 +22,13 @@ export default function QuizScreen({ route, navigation }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [score, setScore] = useState(0);
   const [tipMessage, setTipMessage] = useState("");
-  const [answeredCorrect, setAnsweredCorrect] = useState(null);
   const [answers, setAnswers] = useState([]);
 
   const question = questions?.[currentIndex];
   const isLastQuestion = currentIndex === (questions?.length || 0) - 1;
   const hasAnswered = selectedOption !== null;
 
-  if (!question) {
-    return (
-      <Background>
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 40 }}>
-          <Ionicons name="alert-circle-outline" size={64} color={colors.textMuted} />
-          <Text style={{ fontSize: 18, fontWeight: "700", color: colors.textDark, marginTop: 16, textAlign: "center" }}>
-            No hay preguntas disponibles
-          </Text>
-          <Text style={{ fontSize: 14, color: colors.textMuted, marginTop: 8, textAlign: "center" }}>
-            Vuelve a intentarlo más tarde
-          </Text>
-          <View style={{ marginTop: 24 }}>
-            <PillButton title="Volver" onPress={() => navigation.goBack()} />
-          </View>
-        </View>
-      </Background>
-    );
-  }
-
-  const NUM_OPTIONS = question.options?.length || 4;
-
+  const NUM_OPTIONS = question?.options?.length || 4;
   const optionAnims = useRef(
     Array.from({ length: NUM_OPTIONS }, () => new Animated.Value(0))
   ).current;
@@ -62,6 +41,7 @@ export default function QuizScreen({ route, navigation }) {
   const scorePop = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
+    if (!question) return;
     optionAnims.forEach((a) => a.setValue(0));
     questionFade.setValue(0);
     questionSlide.setValue(20);
@@ -90,10 +70,10 @@ export default function QuizScreen({ route, navigation }) {
       })
     );
     Animated.stagger(0, staggerAnims).start();
-  }, [currentIndex]);
+  }, [currentIndex, question, optionAnims, questionFade, questionSlide]);
 
   useEffect(() => {
-    if (currentIndex > 0) {
+    if (hasAnswered) {
       nextButtonFade.setValue(0);
       Animated.timing(nextButtonFade, {
         toValue: 1,
@@ -101,14 +81,32 @@ export default function QuizScreen({ route, navigation }) {
         useNativeDriver: true,
       }).start();
     }
-  }, [currentIndex]);
+  }, [hasAnswered, nextButtonFade]);
+
+  if (!question) {
+    return (
+      <Background>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center", paddingHorizontal: 40 }}>
+          <Ionicons name="alert-circle-outline" size={64} color={colors.textMuted} />
+          <Text style={{ fontSize: 18, fontWeight: "700", color: colors.textDark, marginTop: 16, textAlign: "center" }}>
+            No hay preguntas disponibles
+          </Text>
+          <Text style={{ fontSize: 14, color: colors.textMuted, marginTop: 8, textAlign: "center" }}>
+            Vuelve a intentarlo más tarde
+          </Text>
+          <View style={{ marginTop: 24 }}>
+            <PillButton title="Volver" onPress={() => navigation.goBack()} />
+          </View>
+        </View>
+      </Background>
+    );
+  }
 
   const handleSelect = (index) => {
     if (hasAnswered) return;
 
     setSelectedOption(index);
     const correct = index === question.correctIndex;
-    setAnsweredCorrect(correct);
 
     setAnswers((prev) => [
       ...prev,
@@ -187,7 +185,6 @@ export default function QuizScreen({ route, navigation }) {
     } else {
       setCurrentIndex((prev) => prev + 1);
       setSelectedOption(null);
-      setAnsweredCorrect(null);
     }
   };
 

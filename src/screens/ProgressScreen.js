@@ -13,14 +13,20 @@ import Background from "../components/Background";
 import ProgressHeader from "../components/ProgressHeader";
 import StatCard from "../components/StatCard";
 import CourseProgressRow from "../components/CourseProgressRow";
+import TrendChart from "../components/TrendChart";
 import colors from "../theme/colors";
 import { courses, topicsByCourse } from "../theme/curriculum";
-import { getAllStats, getCourseStats, getDifficultyStats } from "../services/progress";
+import {
+  getAllStats,
+  getCourseStats,
+  getDifficultyStats,
+  getTrendData,
+  getRecentQuizzes,
+} from "../services/progress";
 
 function TopicProgressItem({ topic, courseId, stats, expanded, onToggle }) {
   const topicStats = stats?.topicStats?.[topic.id];
   const bestPct = topicStats?.best || 0;
-  const quizzesTaken = topicStats?.quizzesTaken || 0;
 
   return (
     <View style={styles.topicItem}>
@@ -47,7 +53,12 @@ function TopicProgressItem({ topic, courseId, stats, expanded, onToggle }) {
             />
           </View>
         </View>
-        <Text style={[styles.topicPercent, { color: bestPct >= 80 ? colors.primaryGreenDark : colors.textDark }]}>
+        <Text
+          style={[
+            styles.topicPercent,
+            { color: bestPct >= 80 ? colors.primaryGreenDark : colors.textDark },
+          ]}
+        >
           {bestPct > 0 ? `${bestPct}%` : "—"}
         </Text>
         <Ionicons
@@ -60,7 +71,12 @@ function TopicProgressItem({ topic, courseId, stats, expanded, onToggle }) {
       {expanded && (
         <View style={styles.difficultySection}>
           {["facil", "medio", "dificil"].map((d) => (
-            <DifficultyRow key={d} courseId={courseId} topicId={topic.id} difficulty={d} />
+            <DifficultyRow
+              key={d}
+              courseId={courseId}
+              topicId={topic.id}
+              difficulty={d}
+            />
           ))}
         </View>
       )}
@@ -70,7 +86,11 @@ function TopicProgressItem({ topic, courseId, stats, expanded, onToggle }) {
 
 function DifficultyRow({ courseId, topicId, difficulty }) {
   const [data, setData] = useState({ taken: false, best: 0, attempts: 0 });
-  const labels = { facil: "⭐ Fácil", medio: "⭐⭐ Medio", dificil: "⭐⭐⭐ Difícil" };
+  const labels = {
+    facil: "⭐ Fácil",
+    medio: "⭐⭐ Medio",
+    dificil: "⭐⭐⭐ Difícil",
+  };
 
   useEffect(() => {
     getDifficultyStats(courseId, topicId).then((s) => setData(s[difficulty]));
@@ -82,7 +102,9 @@ function DifficultyRow({ courseId, topicId, difficulty }) {
       {data.taken ? (
         <View style={styles.diffResult}>
           <Text style={styles.diffBest}>{data.best}%</Text>
-          <Text style={styles.diffAttempts}>{data.attempts} intento{data.attempts > 1 ? "s" : ""}</Text>
+          <Text style={styles.diffAttempts}>
+            {data.attempts} intento{data.attempts > 1 ? "s" : ""}
+          </Text>
         </View>
       ) : (
         <Text style={styles.diffNoData}>Sin intentos</Text>
@@ -118,15 +140,69 @@ function CourseExpanded({ courseId }) {
   );
 }
 
+function RecentQuizItem({ quiz }) {
+  const getIcon = (percent) => {
+    if (percent >= 80) return "checkmark-circle";
+    if (percent >= 60) return "time";
+    return "close-circle";
+  };
+
+  const getColor = (percent) => {
+    if (percent >= 80) return colors.primaryGreen;
+    if (percent >= 60) return "#FF9800";
+    return "#E05B5B";
+  };
+
+  const date = new Date(quiz.date);
+  const dateStr = `${date.getDate()}/${date.getMonth() + 1}`;
+
+  return (
+    <View style={styles.recentItem}>
+      <View
+        style={[
+          styles.recentIcon,
+          { backgroundColor: getColor(quiz.percent) + "20" },
+        ]}
+      >
+        <Ionicons
+          name={getIcon(quiz.percent)}
+          size={20}
+          color={getColor(quiz.percent)}
+        />
+      </View>
+      <View style={styles.recentInfo}>
+        <Text style={styles.recentTitle} numberOfLines={1}>
+          {quiz.topicId || "Quiz"}
+        </Text>
+        <Text style={styles.recentDate}>{dateStr}</Text>
+      </View>
+      <Text
+        style={[styles.recentPercent, { color: getColor(quiz.percent) }]}
+      >
+        {quiz.percent}%
+      </Text>
+    </View>
+  );
+}
+
 export default function ProgressScreen() {
   const [allStats, setAllStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expandedCourse, setExpandedCourse] = useState(null);
+  const [trendData, setTrendData] = useState([]);
+  const [recentQuizzes, setRecentQuizzes] = useState([]);
 
   const loadStats = useCallback(async () => {
     setLoading(true);
     const stats = await getAllStats();
     setAllStats(stats);
+
+    const trend = await getTrendData(null, 5);
+    setTrendData(trend);
+
+    const recent = await getRecentQuizzes(5);
+    setRecentQuizzes(recent);
+
     setLoading(false);
   }, []);
 
@@ -149,7 +225,6 @@ export default function ProgressScreen() {
   const totalQuizzes = allStats?.totalQuizzes || 0;
   const totalLessons = allStats?.totalLessons || 0;
   const avgScore = allStats?.avgScore || 0;
-  const coursesWithProgress = allStats?.courseIds?.length || 0;
 
   const courseRows = courses.map((c) => {
     const courseStats = allStats?.courses?.[c.id];
@@ -196,6 +271,19 @@ export default function ProgressScreen() {
             iconBg="#D2C4F5"
           />
         </View>
+
+        {trendData.length > 1 && (
+          <TrendChart data={trendData} width={320} height={160} />
+        )}
+
+        {recentQuizzes.length > 0 && (
+          <View style={styles.recentSection}>
+            <Text style={styles.sectionTitle}>Últimos intentos</Text>
+            {recentQuizzes.map((quiz, i) => (
+              <RecentQuizItem key={i} quiz={quiz} />
+            ))}
+          </View>
+        )}
 
         <Text style={styles.sectionTitle}>Progreso por curso</Text>
 
@@ -344,5 +432,41 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 6,
     lineHeight: 20,
+  },
+  recentSection: {
+    marginBottom: 20,
+  },
+  recentItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: colors.white,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 8,
+  },
+  recentIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  recentInfo: {
+    flex: 1,
+  },
+  recentTitle: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.textDark,
+  },
+  recentDate: {
+    fontSize: 11,
+    color: colors.textMuted,
+    marginTop: 2,
+  },
+  recentPercent: {
+    fontSize: 16,
+    fontWeight: "700",
   },
 });

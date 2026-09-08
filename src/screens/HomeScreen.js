@@ -3,7 +3,7 @@ import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import Background from '../components/Background';
 import HomeHeader from '../components/HomeHeader';
 import CourseCard from '../components/CourseCard';
-import courses from '../theme/courses';
+import { courses } from '../theme/curriculum';
 import colors from '../theme/colors';
 import ActionRow from '../components/ActionRow';
 
@@ -49,10 +49,8 @@ export default function HomeScreen({ navigation }) {
             title="Subir archivo"
             subtitle="Selecciona un archivo de tu teléfono y genera un cuestionario con su contenido."
             accentColor="#8B5CF6"
-            onPress={() => {
-              // TODO: conectar selector de archivos más adelante
-          }}
-/>
+            onPress={() => navigation.navigate('GenerateQuiz')}
+          />
 
 </View>
           

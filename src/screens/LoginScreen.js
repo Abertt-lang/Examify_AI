@@ -69,7 +69,6 @@ export default function LoginScreen({ navigation }) {
       await GoogleSignin.hasPlayServices();
       await GoogleSignin.signOut();
       const userInfo = await GoogleSignin.signIn();
-      console.log("[GOOGLE SIGN-IN] userInfo:", JSON.stringify(userInfo).substring(0, 300));
       const idToken = userInfo?.data?.idToken;
       if (idToken) {
         await handleGoogleAuth(idToken);
@@ -85,7 +84,7 @@ export default function LoginScreen({ navigation }) {
         Alert.alert("Error", "Google Play Services no está disponible.");
       } else {
         Alert.alert("Error", "No se pudo iniciar sesión con Google.");
-        console.log("[GOOGLE SIGN-IN] Error:", err.code, err.message);
+        console.error("[GOOGLE SIGN-IN] Error:", err.code, err.message);
       }
     } finally {
       setGoogleLoading(false);

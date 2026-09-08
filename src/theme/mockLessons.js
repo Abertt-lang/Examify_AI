@@ -1204,20 +1204,6 @@ export default {
       ],
     },
     medio: {
-      titulo: "Números del 1 al 20",
-      contenido: [
-        { tipo: "intro", texto: "Los números son esenciales para el día a día: decir la hora, hacer compras, dar direcciones y mucho más. Aprende los números del 1 al 20 en inglés." },
-        { tipo: "concepto", titulo: "Números del 1 al 10", texto: "Estos son los primeros diez números en inglés. Nota que algunos tienen ortografía irregular.", subItems: ["1 = One (uan)", "2 = Two (tu)", "3 = Three (sri)", "4 = Four (for)", "5 = Five (faiv)", "6 = Six (siks)", "7 = Seven (séven)", "8 = Eight (eit)", "9 = Nine (nain)", "10 = Ten (ten)"] },
-        { tipo: "imagen", label: "Agregar imagen de números 1-20 en inglés", caption: "Los números del 1 al 20 con su pronunciación" },
-        { tipo: "concepto", titulo: "Números del 11 al 20", texto: "Los números del 11 al 20 tienen formas que debes memorizar.", subItems: ["11 = Once (uans)", "12 = Twelve (tuélv)", "13 = Thirteen (sörtiin)", "14 = Fourteen (fórtiin)", "15 = Fifteen (fíftiin)", "16 = Sixteen (síksiin)", "17 = Seventeen (séventiin)", "18 = Eighteen (éitiin)", "19 = Nineteen (naintiin)", "20 = Twenty (tuénti)"] },
-        { tipo: "formula", formula: "Patrón: 13-19 = número base + 'teen'", descripcion: "Los números del 13 al 19 siguen el patrón de agregar 'teen' al final. Excepciones: thirteen (no threeteen), fifteen (no fiveteen), eighteen (no eightteen)." },
-        { tipo: "ejemplo", titulo: "Practicando números", texto: "¿Cómo se dice 14 en inglés?", pasos: ["Recordamos el patrón: 4 + teen", "Pero se escribe: fourteen (no fourteen)", "Pronunciación: fórtiin", "Resultado: fourteen = catorce"] },
-        { tipo: "tabla", titulo: "Tabla de números", fila: [["1 - One", "6 - Six", "11 - Once", "16 - Sixteen"], ["2 - Two", "7 - Seven", "12 - Twelve", "17 - Seventeen"], ["3 - Three", "8 - Eight", "13 - Thirteen", "18 - Eighteen"], ["4 - Four", "9 - Nine", "14 - Fourteen", "19 - Nineteen"], ["5 - Five", "10 - Ten", "15 - Fifteen", "20 - Twenty"]] },
-        { tipo: "resumen", items: ["Números 1-10: one, two, three, four, five, six, seven, eight, nine, ten", "Números 11-20: once, twelve, thirteen... twenty", "Patrón teen del 13-19", "Once, twelve y thirteen son irregulares", "Practica la pronunciación todos los días"] },
-        { tipo: "tip", texto: "Consejo: Para recordar la diferencia entre 'thirteen' (13) y 'thirty' (30), notar que 'thirteen' tiene el énfasis en 'TEEEN' y 'thirty' en 'THIR'." },
-      ],
-    },
-    medio: {
       titulo: "Colores en Inglés",
       contenido: [
         { tipo: "intro", texto: "Los colores son uno de los primeros temas de vocabulario que aprendes en cualquier idioma. Son útiles para describir objetos, ropa, naturaleza y más." },

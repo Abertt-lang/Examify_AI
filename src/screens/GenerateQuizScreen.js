@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -8,14 +8,16 @@ import {
   ActivityIndicator,
   Alert,
   Image,
+  Animated,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as DocumentPicker from "expo-document-picker";
-import * as FileSystem from "expo-file-system";
+import { File } from "expo-file-system";
+import LottieView from "lottie-react-native";
 import Background from "../components/Background";
 import PillButton from "../components/PillButton";
 import colors from "../theme/colors";
-import { generateQuizFromFile, generateQuizFromImage } from "../services/gemini";
+import { generateQuizFromDocument } from "../services/gemini";
 
 const FILE_TYPES = {
   pdf: ["application/pdf"],
@@ -34,6 +36,9 @@ function getMimeType(name) {
 export default function GenerateQuizScreen({ navigation }) {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const generatedQuestions = useRef(null);
+  const successAnim = useRef(new Animated.Value(0)).current;
 
   const handlePickFile = async () => {
     try {
@@ -47,18 +52,8 @@ export default function GenerateQuizScreen({ navigation }) {
         const fileType = getMimeType(picked.name);
 
         if (fileType === "image" || fileType === "pdf") {
-          let base64;
-          try {
-            base64 = await FileSystem.readAsStringAsync(picked.uri, {
-              encoding: FileSystem.EncodingType.Base64,
-            });
-          } catch (readErr) {
-            console.log("[PICK FILE] Primary read failed, trying SAF:", readErr.message);
-            const docUri = await FileSystem.getContentUriAsync(picked.uri);
-            base64 = await FileSystem.readAsStringAsync(docUri, {
-              encoding: FileSystem.EncodingType.Base64,
-            });
-          }
+          const fileObj = new File(picked.uri);
+          const base64 = await fileObj.base64();
 
           if (!base64 || base64.length < 100) {
             Alert.alert("Error", "El archivo parece estar vacío o no se pudo leer.");
@@ -76,7 +71,7 @@ export default function GenerateQuizScreen({ navigation }) {
         }
       }
     } catch (err) {
-      console.log("[PICK FILE] Error:", err.message);
+      console.error("[PICK FILE] Error:", err.message);
       Alert.alert("Error", "No se pudo leer el archivo. " + err.message);
     }
   };
@@ -89,13 +84,7 @@ export default function GenerateQuizScreen({ navigation }) {
 
     setLoading(true);
     try {
-      let questions;
-
-      if (file.type === "image") {
-        questions = await generateQuizFromImage(file.base64, file.name);
-      } else if (file.type === "pdf") {
-        questions = await generateQuizFromImage(file.base64, file.name);
-      }
+      const questions = await generateQuizFromDocument(file.base64, file.name);
 
       if (!questions || questions.length === 0) {
         Alert.alert("Error", "No se pudieron generar preguntas. Intenta con otro archivo.");
@@ -103,27 +92,68 @@ export default function GenerateQuizScreen({ navigation }) {
         return;
       }
 
-      navigation.replace("Quiz", {
-        courseId: "ai",
-        topicId: "ai_generated",
-        difficulty: "medio",
-        aiQuestions: questions,
-      });
+      generatedQuestions.current = questions;
+      setShowSuccess(true);
+      successAnim.setValue(0);
+      Animated.timing(successAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
     } catch (err) {
-      console.log("[GENERATE] Error:", err.message);
+      console.error("[GENERATE] Error:", err.message);
       Alert.alert("Error", "No se pudieron generar las preguntas. Intenta de nuevo.");
-    } finally {
       setLoading(false);
     }
+  };
+
+  const goToQuiz = () => {
+    if (!generatedQuestions.current) return;
+    navigation.replace("Quiz", {
+      courseId: "ai",
+      topicId: "ai_generated",
+      difficulty: "medio",
+      aiQuestions: generatedQuestions.current,
+    });
   };
 
   if (loading) {
     return (
       <Background>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primaryGreen} />
-          <Text style={styles.loadingText}>Generando preguntas...</Text>
-          <Text style={styles.loadingSubtext}>La IA está analizando tu archivo</Text>
+          {showSuccess ? (
+            <Animated.View
+              style={{
+                alignItems: "center",
+                opacity: successAnim,
+                transform: [
+                  {
+                    scale: successAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0.8, 1],
+                    }),
+                  },
+                ],
+              }}
+            >
+              <LottieView
+                source={require("../../assets/animations/Check Mark - Success.json")}
+                autoPlay
+                loop={false}
+                speed={1.2}
+                style={styles.successAnimation}
+                onAnimationFinish={() => goToQuiz()}
+              />
+              <Text style={styles.loadingText}>¡Cuestionario listo!</Text>
+              <Text style={styles.loadingSubtext}>Preparando tus preguntas...</Text>
+            </Animated.View>
+          ) : (
+            <>
+              <ActivityIndicator size="large" color={colors.primaryGreen} />
+              <Text style={styles.loadingText}>Generando preguntas...</Text>
+              <Text style={styles.loadingSubtext}>La IA está analizando tu archivo</Text>
+            </>
+          )}
         </View>
       </Background>
     );
@@ -272,5 +302,10 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: colors.textMuted,
     marginTop: 6,
+  },
+  successAnimation: {
+    width: 200,
+    height: 200,
+    marginBottom: 8,
   },
 });
