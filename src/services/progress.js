@@ -1,10 +1,16 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { auth } from "../config/firebase";
 
-const STORAGE_KEY = "@examify_progress";
+const BASE_KEY = "@examify_progress";
+
+function getStorageKey() {
+  const uid = auth.currentUser?.uid;
+  return uid ? `${BASE_KEY}_${uid}` : `${BASE_KEY}_guest`;
+}
 
 async function getProgress() {
   try {
-    const raw = await AsyncStorage.getItem(STORAGE_KEY);
+    const raw = await AsyncStorage.getItem(getStorageKey());
     if (raw) return JSON.parse(raw);
     return { quizzes: [], lessonsCompleted: [] };
   } catch {
@@ -24,7 +30,7 @@ export async function saveQuizResult({ courseId, topicId, difficulty, score, tot
     answers,
   };
   progress.quizzes.push(entry);
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+  await AsyncStorage.setItem(getStorageKey(), JSON.stringify(progress));
   return entry;
 }
 
