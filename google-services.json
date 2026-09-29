@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "696800176349",
+    "firebase_url": "https://mapstation-27e71-default-rtdb.firebaseio.com",
+    "project_id": "mapstation-27e71",
+    "storage_bucket": "mapstation-27e71.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696800176349:android:49cc87010b1d3abeb21334",
+        "android_client_info": {
+          "package_name": "com.examify.ai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2Cc7La-VlUnH_cPV2ilkCvn8qPjt7c7Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
